@@ -1,0 +1,1 @@
+- [Session auth in production](session-auth-production.md) — in-memory express-session breaks on autoscale; use connect-pg-simple + createTableIfMissing + trust proxy.
