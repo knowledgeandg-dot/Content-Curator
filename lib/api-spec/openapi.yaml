@@ -2,21 +2,29 @@ openapi: 3.1.0
 info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
-  description: API specification
+  version: 1.0.0
+  description: Dream Valley Live Inventory Tracker API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: plots
+    description: Plot inventory management
+  - name: rm-codes
+    description: RM Code management
+  - name: activity-logs
+    description: Activity log operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +32,556 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: loginCrm
+      tags: [auth]
+      summary: CRM admin login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrmLoginInput"
+      responses:
+        "200":
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login-rm:
+    post:
+      operationId: loginRm
+      tags: [auth]
+      summary: Sales login with RM code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RmLoginInput"
+      responses:
+        "200":
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+        "401":
+          description: Invalid or inactive RM code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current session user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout current session
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /plots:
+    get:
+      operationId: getPlots
+      tags: [plots]
+      summary: List all plots (CRM sees all, Sales sees Available only)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: plcType
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: plotFacing
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of plots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Plot"
+    post:
+      operationId: createPlot
+      tags: [plots]
+      summary: Create a new plot (CRM only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlotInput"
+      responses:
+        "201":
+          description: Plot created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plot"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /plots/stats:
+    get:
+      operationId: getPlotStats
+      tags: [plots]
+      summary: Get summary statistics of all plots
+      responses:
+        "200":
+          description: Plot statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlotStats"
+
+  /plots/{id}:
+    get:
+      operationId: getPlot
+      tags: [plots]
+      summary: Get a single plot by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Plot found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plot"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updatePlot
+      tags: [plots]
+      summary: Update a plot (CRM only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlotUpdate"
+      responses:
+        "200":
+          description: Plot updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plot"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deletePlot
+      tags: [plots]
+      summary: Delete a plot (CRM only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /rm-codes:
+    get:
+      operationId: getRmCodes
+      tags: [rm-codes]
+      summary: List all RM codes (CRM only)
+      responses:
+        "200":
+          description: List of RM codes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RmCode"
+    post:
+      operationId: createRmCode
+      tags: [rm-codes]
+      summary: Create a new RM code (CRM only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RmCodeInput"
+      responses:
+        "201":
+          description: RM code created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RmCode"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /rm-codes/{id}:
+    patch:
+      operationId: updateRmCode
+      tags: [rm-codes]
+      summary: Update an RM code (CRM only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RmCodeUpdate"
+      responses:
+        "200":
+          description: RM code updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RmCode"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteRmCode
+      tags: [rm-codes]
+      summary: Delete an RM code (CRM only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /activity-logs:
+    get:
+      operationId: getActivityLogs
+      tags: [activity-logs]
+      summary: Get activity logs (CRM only)
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Activity logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityLog"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    MessageResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+
+    AuthSession:
+      type: object
+      required: [type, id, name]
+      properties:
+        type:
+          type: string
+          enum: [crm, sales]
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        role:
+          type: ["string", "null"]
+        rmCode:
+          type: ["string", "null"]
+
+    CrmLoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    RmLoginInput:
+      type: object
+      required: [rmCode]
+      properties:
+        rmCode:
+          type: string
+
+    Plot:
+      type: object
+      required: [id, plotNumber, widthMtr, lengthMtr, areaSqMtr, areaSqYrd, plotFacing, plcType, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        plotNumber:
+          type: string
+        widthMtr:
+          type: number
+        lengthMtr:
+          type: number
+        areaSqMtr:
+          type: number
+        areaSqYrd:
+          type: number
+        plotFacing:
+          type: string
+          enum: [North, South, East, West, North-East, North-West, South-East, South-West]
+        plcType:
+          type: string
+          enum: [PLC, Non PLC]
+        status:
+          type: string
+          enum: [Available, Allotted, Freeze, Hold]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    PlotInput:
+      type: object
+      required: [plotNumber, widthMtr, lengthMtr, areaSqMtr, areaSqYrd, plotFacing, plcType, status]
+      properties:
+        plotNumber:
+          type: string
+          minLength: 1
+        widthMtr:
+          type: number
+        lengthMtr:
+          type: number
+        areaSqMtr:
+          type: number
+        areaSqYrd:
+          type: number
+        plotFacing:
+          type: string
+          enum: [North, South, East, West, North-East, North-West, South-East, South-West]
+        plcType:
+          type: string
+          enum: [PLC, Non PLC]
+        status:
+          type: string
+          enum: [Available, Allotted, Freeze, Hold]
+
+    PlotUpdate:
+      type: object
+      properties:
+        plotNumber:
+          type: string
+          minLength: 1
+        widthMtr:
+          type: number
+        lengthMtr:
+          type: number
+        areaSqMtr:
+          type: number
+        areaSqYrd:
+          type: number
+        plotFacing:
+          type: string
+          enum: [North, South, East, West, North-East, North-West, South-East, South-West]
+        plcType:
+          type: string
+          enum: [PLC, Non PLC]
+        status:
+          type: string
+          enum: [Available, Allotted, Freeze, Hold]
+
+    PlotStats:
+      type: object
+      required: [total, available, allotted, freeze, hold, plc, nonPlc]
+      properties:
+        total:
+          type: integer
+        available:
+          type: integer
+        allotted:
+          type: integer
+        freeze:
+          type: integer
+        hold:
+          type: integer
+        plc:
+          type: integer
+        nonPlc:
+          type: integer
+
+    RmCode:
+      type: object
+      required: [id, rmCode, salesPersonName, status, createdAt]
+      properties:
+        id:
+          type: integer
+        rmCode:
+          type: string
+        salesPersonName:
+          type: string
+        status:
+          type: string
+          enum: [Active, Inactive]
+        createdAt:
+          type: string
+
+    RmCodeInput:
+      type: object
+      required: [rmCode, salesPersonName, status]
+      properties:
+        rmCode:
+          type: string
+          minLength: 1
+        salesPersonName:
+          type: string
+          minLength: 1
+        status:
+          type: string
+          enum: [Active, Inactive]
+
+    RmCodeUpdate:
+      type: object
+      properties:
+        rmCode:
+          type: string
+          minLength: 1
+        salesPersonName:
+          type: string
+          minLength: 1
+        status:
+          type: string
+          enum: [Active, Inactive]
+
+    ActivityLog:
+      type: object
+      required: [id, userName, action, plotNumber, createdAt]
+      properties:
+        id:
+          type: integer
+        userName:
+          type: string
+        action:
+          type: string
+        plotNumber:
+          type: string
+        oldData:
+          type: ["string", "null"]
+        newData:
+          type: ["string", "null"]
+        createdAt:
+          type: string

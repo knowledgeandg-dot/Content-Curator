@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Dream Valley"
+version = "1.0.0"
+id = "artifacts/dream-valley"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23037
+
+[services.development]
+run = "pnpm --filter @workspace/dream-valley run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/dream-valley", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/dream-valley/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23037"
+BASE_PATH = "/"

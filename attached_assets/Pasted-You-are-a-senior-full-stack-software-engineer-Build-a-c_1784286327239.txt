@@ -1,0 +1,938 @@
+You are a senior full-stack software engineer.
+
+Build a complete production-ready web application from scratch.
+
+Do not create only UI screens.
+Do not create demo buttons.
+Every button, form, page, database operation, and feature must be fully functional.
+
+Before completing the project, test every feature and fix all errors.
+
+Application Name:
+
+DREAM VALLEY
+Live Inventory Tracker
+
+
+====================================================
+
+PROJECT PURPOSE
+
+====================================================
+
+Create an internal real estate inventory management system.
+
+The company sells plots.
+
+The purpose of this application is:
+
+1. CRM Team manages and controls all inventory.
+2. Sales Team only views currently available plots.
+3. Sales Team does not contact CRM repeatedly for availability.
+4. Inventory updates happen live.
+
+
+There are only two interfaces:
+
+1. CRM Dashboard
+2. Sales Dashboard
+
+
+====================================================
+
+TECHNOLOGY REQUIREMENTS
+
+====================================================
+
+Build a complete full-stack application.
+
+Frontend:
+
+React.js
+
+Backend:
+
+Node.js + Express
+
+Database:
+
+Firebase Firestore or Supabase PostgreSQL
+
+Authentication:
+
+Role-based authentication
+
+Styling:
+
+Tailwind CSS
+
+Export:
+
+Excel export functionality
+
+
+The application must be:
+
+- Responsive
+- Mobile friendly
+- Secure
+- Fast
+- Production ready
+
+
+====================================================
+
+USER ROLES
+
+====================================================
+
+
+There are only two types of users.
+
+
+====================================================
+ROLE 1: CRM ADMIN
+====================================================
+
+
+CRM has full authority.
+
+CRM can:
+
+- Login
+- View all plots
+- Create new plots
+- Edit plots
+- Delete plots
+- Change plot status
+- Manage RM Codes
+- Export Excel
+- View Activity Logs
+
+
+====================================================
+ROLE 2: SALES USER
+====================================================
+
+
+Sales has view-only authority.
+
+Sales cannot:
+
+- Add inventory
+- Edit inventory
+- Delete inventory
+- Change status
+- Access CRM dashboard
+
+
+Sales can only:
+
+- Login using RM Code
+- View available plots
+- Search inventory
+- Filter inventory
+
+
+====================================================
+
+LOGIN SYSTEM
+
+====================================================
+
+
+Create a professional login page.
+
+
+Two login options:
+
+
+OPTION 1:
+
+CRM LOGIN
+
+
+Fields:
+
+Email
+
+Password
+
+
+After successful login:
+
+Redirect to CRM Dashboard.
+
+
+----------------------------------------------------
+
+
+OPTION 2:
+
+SALES LOGIN
+
+
+Sales login should be simple.
+
+Sales should not use email/password.
+
+
+Sales login method:
+
+RM CODE
+
+
+Example:
+
+RM001
+
+RM002
+
+RM003
+
+
+The RM Code must be controlled by CRM.
+
+
+Do not generate random RM codes automatically.
+
+
+CRM should be able to create and change RM codes.
+
+
+If RM Code exists and is active:
+
+Allow login.
+
+
+If RM Code does not exist:
+
+Show:
+
+Invalid RM Code
+
+
+====================================================
+
+DATABASE STRUCTURE
+
+====================================================
+
+
+Create proper database collections/tables.
+
+
+TABLE 1:
+
+PLOTS
+
+
+Fields:
+
+
+id
+
+Plot Number
+
+Width MTR
+
+Length MTR
+
+Area SQ MTR
+
+Area SQ YRD
+
+Plot Facing
+
+PLC Type
+
+Status
+
+Created Date
+
+Updated Date
+
+
+
+====================================================
+
+
+TABLE 2:
+
+CRM USERS
+
+
+Fields:
+
+
+id
+
+Name
+
+Email
+
+Password
+
+Role
+
+
+====================================================
+
+
+TABLE 3:
+
+RM CODES
+
+
+Fields:
+
+
+id
+
+RM Code
+
+Sales Person Name
+
+Status
+
+
+Status:
+
+Active
+
+Inactive
+
+
+====================================================
+
+
+TABLE 4:
+
+ACTIVITY LOGS
+
+
+Fields:
+
+
+id
+
+User Name
+
+Action
+
+Plot Number
+
+Old Data
+
+New Data
+
+Date
+
+Time
+
+
+====================================================
+
+
+====================================================
+
+CRM DASHBOARD
+
+====================================================
+
+
+After CRM login open CRM Dashboard.
+
+
+Create professional admin layout.
+
+
+Sections:
+
+
+1. Inventory Management
+
+2. Add New Plot
+
+3. RM Code Management
+
+4. Activity Logs
+
+5. Export Excel
+
+
+====================================================
+
+CRM INVENTORY TABLE
+
+====================================================
+
+
+Show all plots.
+
+
+Columns:
+
+
+Plot Number
+
+Width MTR
+
+Length MTR
+
+Area SQ MTR
+
+Area SQ YRD
+
+Plot Facing
+
+PLC Type
+
+Status
+
+Action
+
+
+Action buttons:
+
+
+Edit
+
+Delete
+
+
+Every button must work.
+
+
+====================================================
+
+ADD NEW PLOT
+
+====================================================
+
+
+Create a working form.
+
+
+Fields:
+
+
+Plot Number
+
+Width MTR
+
+Length MTR
+
+Area SQ MTR
+
+Area SQ YRD
+
+Plot Facing
+
+
+Facing options:
+
+
+North
+
+South
+
+East
+
+West
+
+North-East
+
+North-West
+
+South-East
+
+South-West
+
+
+
+PLC Type:
+
+
+PLC
+
+Non PLC
+
+
+
+Status:
+
+
+Available
+
+Allotted
+
+Freeze
+
+Hold
+
+
+
+When CRM clicks Save:
+
+
+Validate data.
+
+Save into database.
+
+Show success message.
+
+Refresh inventory list automatically.
+
+
+====================================================
+
+EDIT PLOT
+
+====================================================
+
+
+Edit button must open existing plot data.
+
+
+CRM can edit every field.
+
+
+After Save:
+
+
+Update database.
+
+Update CRM table.
+
+Update Sales dashboard immediately.
+
+Create activity log.
+
+
+Example:
+
+
+Before:
+
+Plot 101
+
+Status Available
+
+
+After:
+
+Status Hold
+
+
+Result:
+
+
+Plot disappears from Sales Dashboard.
+
+
+====================================================
+
+DELETE PLOT
+
+====================================================
+
+
+Delete button must work.
+
+
+Before deleting:
+
+
+Show confirmation.
+
+
+After delete:
+
+
+Remove from database.
+
+Remove from CRM list.
+
+Remove from Sales view.
+
+
+Create activity log.
+
+
+====================================================
+
+STATUS SYSTEM
+
+====================================================
+
+
+Allowed status:
+
+
+Available
+
+Allotted
+
+Freeze
+
+Hold
+
+
+Rules:
+
+
+Sales Dashboard only displays:
+
+
+Available
+
+
+Never show:
+
+
+Allotted
+
+Freeze
+
+Hold
+
+
+====================================================
+
+RM CODE MANAGEMENT
+
+====================================================
+
+
+Create RM Management section inside CRM.
+
+
+CRM can:
+
+
+Add RM Code
+
+Edit RM Code
+
+Delete RM Code
+
+Activate RM Code
+
+Deactivate RM Code
+
+
+Example:
+
+
+RM001
+
+Rahul Sharma
+
+Active
+
+
+Sales login uses these RM codes.
+
+
+====================================================
+
+SALES DASHBOARD
+
+====================================================
+
+
+After RM Code login:
+
+
+Open Sales Dashboard.
+
+
+Design should be simple.
+
+
+Sales sees only available plots.
+
+
+Display columns:
+
+
+Plot Number
+
+Width MTR
+
+Length MTR
+
+Area SQ MTR
+
+Area SQ YRD
+
+Plot Facing
+
+PLC Type
+
+
+Do not show:
+
+
+Status
+
+Edit buttons
+
+CRM options
+
+
+====================================================
+
+SALES FILTER SYSTEM
+
+====================================================
+
+
+Create filters:
+
+
+1.
+
+PLC Type:
+
+
+PLC
+
+Non PLC
+
+
+
+2.
+
+Facing:
+
+
+North
+
+South
+
+East
+
+West
+
+North-East
+
+North-West
+
+South-East
+
+South-West
+
+
+
+3.
+
+Size:
+
+
+Filter by Area SQ YRD
+
+
+4.
+
+Search:
+
+
+Plot Number
+
+
+Filters must work instantly.
+
+
+====================================================
+
+REAL TIME INVENTORY UPDATE
+
+====================================================
+
+
+This is the most important feature.
+
+
+Use real-time database listeners.
+
+
+When CRM changes:
+
+
+Add Plot
+
+Edit Plot
+
+Delete Plot
+
+Change Status
+
+
+Sales dashboard updates automatically.
+
+
+No manual refresh.
+
+
+Example:
+
+
+CRM changes:
+
+
+Plot 500
+
+Available → Hold
+
+
+Immediately:
+
+
+Plot 500 disappears from Sales Dashboard.
+
+
+====================================================
+
+ACTIVITY LOG
+
+====================================================
+
+
+Every CRM action must be recorded.
+
+
+Record:
+
+
+Who changed it
+
+What changed
+
+Old value
+
+New value
+
+Date
+
+Time
+
+
+Examples:
+
+
+User Rahul changed:
+
+Plot 101
+
+Available → Hold
+
+
+
+User Amit added:
+
+Plot 205
+
+
+====================================================
+
+EXCEL EXPORT
+
+====================================================
+
+
+Add Export Excel button in CRM.
+
+
+Export all inventory:
+
+
+Plot Number
+
+Width
+
+Length
+
+Area SQ MTR
+
+Area SQ YRD
+
+Facing
+
+PLC Type
+
+Status
+
+
+====================================================
+
+ERROR PREVENTION REQUIREMENTS
+
+====================================================
+
+
+IMPORTANT:
+
+
+Do not create incomplete pages.
+
+
+Every route must work.
+
+
+Every button must have a working function.
+
+
+No 404 errors.
+
+
+No empty pages.
+
+
+No placeholder buttons.
+
+
+No fake data.
+
+
+Connect all forms with the database.
+
+
+Test:
+
+Login.
+
+Add Plot.
+
+Edit Plot.
+
+Delete Plot.
+
+Change Status.
+
+RM Code Login.
+
+Excel Export.
+
+Activity Log.
+
+
+====================================================
+
+FINAL REQUIREMENT
+
+====================================================
+
+
+Before finishing:
+
+Run the application.
+
+Test every feature.
+
+Fix all errors.
+
+The final output must be a ready-to-test working website.
+
+The application should feel like a real internal company software system, not a prototype.
