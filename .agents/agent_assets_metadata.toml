@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "3zgxECF2HvSU04IBqx0fd"
+uri = "file://dream-valley-project.zip"
+type = "unspecified"
+title = "Dream Valley — Project Source"
