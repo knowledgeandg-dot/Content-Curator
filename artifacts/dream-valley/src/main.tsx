@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';
-import { setBaseUrl } from '@workspace/api-client-react';
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./index.css";
 
-import App from './App';
-import './index.css';
+import { setBaseUrl } from "@workspace/api-client-react";
 
-setBaseUrl('https://content-curator-api.onrender.com');
+setBaseUrl("https://content-curator-api.onrender.com");
 
-createRoot(document.getElementById('root')!).render(<App />);
+createRoot(document.getElementById("root")!).render(<App />);
