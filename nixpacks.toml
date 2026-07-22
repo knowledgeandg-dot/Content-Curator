@@ -1,14 +1,19 @@
+providers = ["node"]
+
 [phases.setup]
 nixPkgs = ["nodejs_22"]
 
 [phases.install]
 cmds = [
-  "corepack enable",
   "corepack prepare pnpm@9.15.0 --activate",
-  "pnpm install --no-frozen-lockfile"
+  "NODE_ENV=development pnpm install --frozen-lockfile --prefer-offline"
 ]
 
 [phases.build]
 cmds = [
-  "pnpm run build"
+  "pnpm --filter @workspace/api-server run build",
+  "pnpm --filter @workspace/dream-valley run build"
 ]
+
+[start]
+cmd = "node --enable-source-maps artifacts/api-server/dist/index.mjs"
