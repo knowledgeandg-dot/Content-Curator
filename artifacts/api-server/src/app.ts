@@ -77,4 +77,19 @@ app.use(
 
 app.use("/api", router);
 
+const frontendDistPath = path.resolve(
+  import.meta.dirname,
+  "../../dream-valley/dist",
+);
+
+app.use(express.static(frontendDistPath));
+
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    next();
+    return;
+  }
+  res.sendFile(path.join(frontendDistPath, "index.html"));
+});
+
 export default app;
