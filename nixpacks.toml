@@ -7,7 +7,7 @@ nixPkgs = ["nodejs_22"]
 cmds = [
   "corepack enable",
   "corepack prepare pnpm@9.15.0 --activate",
-  "NODE_ENV=development pnpm install --frozen-lockfile --prefer-offline"
+  "NODE_ENV=development pnpm install --no-frozen-lockfile --prefer-offline"
 ]
 
 [phases.build]
